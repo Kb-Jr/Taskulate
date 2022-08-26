@@ -1,0 +1,18 @@
+{% extends 'taskulate/layout.html' %}
+{% block body %}
+<div class="container-card">
+    <div class="header-bar">
+        <a href="{% url 'tasks' %}"><i class="fa-solid fa-angles-left"></i>  Back to Homepage</a></a>
+    </div>
+
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <p>Click "Delete" to remove <b>"{{task}}"</b> </p>
+            <input class="button" type="submit" value="Delete" />
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

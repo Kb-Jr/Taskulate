@@ -1,0 +1,122 @@
+{% extends 'taskulate/layout.html' %}
+{% load static %}
+{% block body %}
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+
+<div class="container-card">
+    <div class="header-bar">
+        <div>
+            <h1>Hello, <b>{{request.user|title}}!</b></h1>
+            <h3 style="margin:0">You have <i style="text-decoration: underline;">{{count}}</i> incomplete task{{ count|pluralize:"s" }}</h3>
+        </div>
+
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}">Logout</a> 
+        {% else %}
+        <a href="{% url 'login' %}">Login</a> 
+        {% endif %}
+    </div>
+
+
+    <div id="search-add-wrapper">
+        <form method="GET" style="display: flex;">
+            <input type='text' class="mr-2" name='search-area' placeholder="Search" value="{{search_input}}" autocomplete="off">
+            <input class="button" type="submit" value='Search'>
+        </form>
+
+        {% if tasks|length > 0 %}
+        <a id="add-link" href="{% url 'task-create' %}">Create New Task <i class="fa-solid fa-circle-plus"></i></a>
+        {% endif %}
+    </div>
+
+
+    <!-- Hidden form whicf submits the position of new items  -->
+    <form style="display: none;" id="reorderForm" method="post" action="{% url 'task-reorder' %}">
+        {% csrf_token %}
+        <input type="hidden" id="positionInput" name="position">
+    </form>
+
+    <!-- section which displays the details of a task -->
+    <div id="tasklist" class="task-items-wrapper">
+        {% for task in tasks %}
+        <div class="task-wrapper" data-position="{{task.pk}}">
+            <div class="task-title" >
+                {% if task.complete %}
+                <div class="task-complete-icon"></div>
+                <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i> 
+                
+                {% else %}
+                <div class="task-incomplete-icon"></div>
+                <a href="{% url 'task-update' task.id %}">{{task}} </a> 
+                
+                {% endif %}
+                
+            </div>
+
+            <div class="task-controls">
+                <a class="delete-link" href="{% url 'task-delete' task.id %}"><i class="fa-solid fa-trash-can"></i></a>
+                <span class="handle">&nbsp;&#10247;</span>
+            </div>
+        </div>
+        <div class="details-card">
+            <div class="row m-1">
+                
+                <div class="col" style="width: 80px; overflow:hidden; word-break: break-all; white-space: normal;"><b>Description</b> <p style="font-style: italic;">{{task.description}}</p></div>
+            </div>
+        
+            <div class="row m-2">
+                <div class="col"><b>Created on:</b> <p style="font-size:12px; color: gray; font-style: italic;">{{task.created}}</p></div>
+            </div>
+            
+            <div class="row m-2">
+                {% if task.complete %}
+                <div class="col" ><b>Status:</b> <span><i class="fa-solid fa-check" style="color:green;"></i></span></div>
+                
+                {% else %}
+                <div class="col" ><b>Status:</b> <span><i class="fa-solid fa-xmark" style="color: red;"></i></span></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- show message if there are no tasks and provide a link to start creating tasks -->
+        {% empty %}
+        <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
+            <h3>You have no tasks created yet!</h3>
+            <h3>Start creating <a style="color: #256D85;" href="{% url 'task-create' %}">New tasks here</a> ! </h3>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+    
+    var taskList = document.getElementById("tasklist");
+    var reorderForm = document.getElementById("reorderForm");
+    var positionInput = document.getElementById("positionInput");
+
+    let sortable = Sortable.create(taskList, {
+        handle: '.handle',
+        ghostClass: 'dropArea',
+        chosenClass: 'selectedTask',
+
+    });
+
+    function reordering() {
+        const rows = document.getElementsByClassName("task-wrapper");
+        let pos = [];
+        for (let row of rows) {
+            pos.push(row.dataset.position);
+        }
+        console.log(pos.join(","))
+        positionInput.value = pos.join(',');
+        reorderForm.submit();
+    }
+
+    document.ondrop = reordering
+
+</script>
+
+{% endblock %}
