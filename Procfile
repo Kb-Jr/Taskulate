@@ -1,1 +1,1 @@
-web gunicorn taskulate.wsgi:application --log-file -
+web: gunicorn taskulate.wsgi --log-file -
