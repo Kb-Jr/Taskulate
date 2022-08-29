@@ -4,6 +4,7 @@ from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, Tas
 from . import views
 from django.views.generic.base import RedirectView
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
+from django.core.context_processors import csrf
 
 urlpatterns = [
     re_path(r'^favicon\.ico$', favicon_view),
