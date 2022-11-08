@@ -40,7 +40,7 @@ For the interface CSS, bootstrap and jaavscript were utilized. CSS and bootstrap
 - The models.py contains the Task and User model. Which were used in the views.py file
 
 
-### Demonstration video:
+### Demonstration video: https://youtu.be/8y6GETvZO98
 
 
 
