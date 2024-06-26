@@ -1,6 +1,6 @@
 # Taskulate
 
-This is a task web app which serves as a to-do platform. The job of the web app is to help users keep track of activities that needs to be handled and the status of said activities. This app was built using the Django framework.
+This is a task web app which serves as a to-do app. The purpose of the web app is to help users keep track of activities that needs to be handled and the status of said activities. This app was built using the Django framework.
 
 
 ### Usage
